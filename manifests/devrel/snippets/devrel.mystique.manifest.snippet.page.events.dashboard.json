@@ -1,0 +1,44 @@
+{
+  "type": "page",
+  "path": "/devrel-events-dashboard",
+  "nav": {
+    "label": "DevRel Events Dashboard",
+    "icon": "MdEvent"
+  },
+  "component": "fc.page",
+  "props": {
+    "title": "DevRel Events Dashboard - Updated on: {{dateStringFormatter (dateSubtract)}}"
+  },
+  "descendants": [
+    {
+      "component": "fc.page.section.header",
+      "props": {
+        "title": "Order Orchestration Events - Last 24 Hours"
+      }
+    },
+    {
+      "component": "devrel.provider.rest",
+      "props": {
+        "endpoint": "api/v4.1/event",
+        "props": {
+          "context.entityType": "ORDER",
+          "eventType": "ORCHESTRATION",
+          "eventStatus": "FAILED",
+          "from": "{{dateStringFormatter (dateSubtract hours=24) 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]' true}}"
+        }
+      },
+      "descendants": [
+        {
+          "component": "fc.dashboard.threshold",
+          "props": {
+            "label": "Failed",
+            "value": "{{results.length}}",
+            "thresholdLow": 1,
+            "thresholdHigh": 5,
+            "link": "#/events?context.entityType=ORDER&eventType=ORCHESTRATION&eventStatus=FAILED&from={{dateStringFormatter (dateSubtract hours=24) 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]' true}}"
+          }
+        }
+      ]
+    }
+  ]
+}
